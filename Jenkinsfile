@@ -101,11 +101,11 @@ pipeline {
                     steps{
                         bat """
                         trivy.exe image ^
-                          --severity CRITICAL ^ 
-                          --exit-code 1 ^
-                          --format json ^
-                          -o backend-trivy-report.json ^
-                          %BACKEND_IMAGE%
+                        --severity CRITICAL ^ 
+                        --exit-code 1 ^
+                        --format json ^
+                        -o backend-trivy-report.json ^
+                        %BACKEND_IMAGE%
                         """
                     }
                 }
@@ -114,11 +114,11 @@ pipeline {
                     steps {
                         bat """ 
                         trivy.exe image ^
-                          --severity CRITICAL ^
-                          --exit-code 1 ^
-                          --format json ^
-                          -o frontend-trivy-report.json ^
-                          %FRONTEND_IMAGE%
+                        --severity CRITICAL ^
+                        --exit-code 1 ^
+                        --format json ^
+                        -o frontend-trivy-report.json ^
+                        %FRONTEND_IMAGE%
                         """
                     }
                 }
