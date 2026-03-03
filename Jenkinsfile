@@ -95,6 +95,38 @@ pipeline {
             }
         }
 
+        stage("Trivy") {
+            parallel{
+                stage("scan backend image") {
+                    steps{
+                        bat """
+                        docker run --rm ^
+                        aquasec/trivy image ^
+                        --severity CRITICAL ^ 
+                        --exit-code 1^
+                        --format json ^
+                        -o backend-trivy-report.json ^
+                        %BACKEND_IMAGE%
+                        """
+                    }
+                }
+
+                stage("scan frontend image") {
+                    steps {
+                        bat """ 
+                        docker run --rm ^
+                        aquasec/trivy image ^
+                        --severity CRITICAL ^
+                        --exit-code 1 ^
+                        --format json ^
+                        -o frontend-trivy-report.json ^
+                        %FRONTEND_IMAGE%
+                        """
+                    }
+                }
+            }
+        }
+
         stage('Docker compose') {
             steps {
                 bat 'docker compose up -d'
