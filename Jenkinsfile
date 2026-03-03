@@ -100,10 +100,8 @@ pipeline {
                 stage("scan backend image") {
                     steps{
                         bat """
-                        docker run --rm ^
-                        aquasec/trivy image ^
                         --severity CRITICAL ^ 
-                        --exit-code 1^
+                        --exit-code 1 ^
                         --format json ^
                         -o backend-trivy-report.json ^
                         %BACKEND_IMAGE%
@@ -114,8 +112,6 @@ pipeline {
                 stage("scan frontend image") {
                     steps {
                         bat """ 
-                        docker run --rm ^
-                        aquasec/trivy image ^
                         --severity CRITICAL ^
                         --exit-code 1 ^
                         --format json ^
