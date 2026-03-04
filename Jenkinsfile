@@ -7,8 +7,9 @@ pipeline {
 
     environment {
             SONAR_SCANNER_HOME = tool 'SonarQube-Scanner-600'
-            BACKEND_IMAGE = "pipeline-sms-backend"
-            FRONTEND_IMAGE = "pipeline-sms-frontend"
+            DOCKERHUB_USER = "fahad813"
+            BACKEND_IMAGE = "${DOCKERHUB_USER}/pipeline-sms-backend:${BUILD_NUMBER}"
+            FRONTEND_IMAGE = "${DOCKERHUB_USER}/pipeline-sms-frontend:${BUILD_NUMBER}"
     }
 
     stages {
@@ -117,18 +118,43 @@ pipeline {
             }
         }
 
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerHub_creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                }
+            }
+        }
+
+        stage('Push Images to DockerHub') {
+            parallel {
+                stage('Push Backend') {
+                    steps {
+                        bat 'docker push %BACKEND_IMAGE%'
+                    }
+                }
+                stage('Push Frontend') {
+                    steps {
+                        bat 'docker push %FRONTEND_IMAGE%'
+                    }
+                }
+            }
+        }
+
         stage('Docker compose') {
             steps {
                 bat 'docker compose up -d'
             }
         }
-
-
     }
 
     post {
         always {
-            echo 'pipeline finished.'
+            archiveArtifacts artifacts: '*.json', allowEmptyArchive: true
         }
         success {
             echo 'pipeline suceess.'
