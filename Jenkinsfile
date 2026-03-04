@@ -67,8 +67,8 @@ pipeline {
                 withSonarQubeEnv('MySonarQubeServer'){
                     bat """
                     ${SONAR_SCANNER_HOME}/bin/sonar-scanner ^
-                      -D"sonar.projectKey=sms-pipeline" ^
-                      -Dsonar.sources="backend, frontend" ^
+                      -Dsonar.projectKey=sms-pipeline ^
+                      -Dsonar.sources=. ^
                       -Dsonar.host.url=%SONAR_HOST_URL%
                     """
                 }
