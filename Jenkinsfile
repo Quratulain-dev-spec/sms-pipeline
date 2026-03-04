@@ -100,7 +100,7 @@ pipeline {
             parallel{
                 stage("scan backend image") {
                     steps {
-                        bat "trivy.exe image --severity CRITICAL --exit-code 1 --format json -o backend-trivy-report.json --timeout 15m  %BACKEND_IMAGE%"
+                        bat "trivy.exe image --severity CRITICAL --exit-code 1 --format json -o backend-trivy-report.json %BACKEND_IMAGE%"
                     }
                 }
                 stage("scan frontend image") {
@@ -111,7 +111,6 @@ pipeline {
                         --exit-code 1 ^
                         --format json ^
                         -o frontend-trivy-report.json ^
-                        --timeout 15m
                         %FRONTEND_IMAGE%
                         """
                     }
