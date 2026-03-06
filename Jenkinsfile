@@ -4,6 +4,13 @@ pipeline {
      tools {
         nodejs 'NodeJs'
     }
+    environment {
+            SONAR_SCANNER_HOME = tool 'SonarQube-Scanner'
+            DOCKERHUB_USER = "anniesaeed"
+            BACKEND_IMAGE = "${DOCKERHUB_USER}/pipeline-sms-backend:${BUILD_NUMBER}"
+            FRONTEND_IMAGE = "${DOCKERHUB_USER}/pipeline-sms-frontend:${BUILD_NUMBER}"
+    }
+
 
 
     stages {
@@ -55,6 +62,19 @@ pipeline {
                 }
             }
         }
+        stage('SAST') {
+            steps {
+                withSonarQubeEnv('MySonarQubeServer'){
+                    bat """
+                    ${SONAR_SCANNER_HOME}/bin/sonar-scanner ^
+                      -Dsonar.projectKey=sms-pipeline ^
+                      -Dsonar.sources=. ^
+                      -Dsonar.host.url=%SONAR_HOST_URL%
+                    """
+                }
+            }
+        }
+
 
         
 
