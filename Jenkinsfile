@@ -58,7 +58,7 @@ pipeline {
                 stage('Backend Image') {
                     steps{
                         script {
-                            bat 'docker build -t %BACKEND_IMAGE% ./backend'
+                            bat 'docker build -t anniesaeed/my-nodejs-app ./backend'
                         }
                       
                     }
@@ -67,7 +67,7 @@ pipeline {
                 stage('Frontend Image') {
                     steps {
                       
-                        bat 'docker build -t %FRONTEND_IMAGE% ./frontend'
+                        bat 'docker build -t anniesaeed/my-nodejs-app ./frontend'
                     }
                 }
 
