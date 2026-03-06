@@ -1,17 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'NodeJs'
-    }
-
-    environment {
-            SONAR_SCANNER_HOME = tool 'SonarQube-Scanner-600'
-            DOCKERHUB_USER = "fahad813"
-            BACKEND_IMAGE = "${DOCKERHUB_USER}/pipeline-sms-backend:${BUILD_NUMBER}"
-            FRONTEND_IMAGE = "${DOCKERHUB_USER}/pipeline-sms-frontend:${BUILD_NUMBER}"
-    }
-
     stages {
         stage('Checkout Code') {
             steps{
@@ -62,18 +51,7 @@ pipeline {
             }
         }
 
-        stage('SAST') {
-            steps {
-                withSonarQubeEnv('MySonarQubeServer'){
-                    bat """
-                    ${SONAR_SCANNER_HOME}/bin/sonar-scanner ^
-                      -Dsonar.projectKey=sms-pipeline ^
-                      -Dsonar.sources=. ^
-                      -Dsonar.host.url=%SONAR_HOST_URL%
-                    """
-                }
-            }
-        }
+        
 
         stage('Build Docker Images') {
             parallel {
@@ -122,7 +100,7 @@ pipeline {
         stage('Docker Login') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerHub_creds',
+                    credentialsId: 'dockerhub',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
