@@ -1,0 +1,76 @@
+name: Sms Pipeline Workflow
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+            - 'feature/*'
+
+
+jobs:
+    Install:
+        name: Install
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                app: [frontend, backend]
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v6
+
+            - name: setup node
+              uses: actions/setup-node@v6
+              with:
+                node-version: 20
+
+            - name: Install dependency
+              run: |
+                cd ${{ matrix.app}}
+                npm install
+            
+    test-and-audit:
+          runs-on: ubuntu-latest
+          needs: Install
+
+          strategy:
+            matrix:
+                app: [frontend, backend]
+
+          steps:
+            - name: checkout repository
+              uses: actions/checkout@v6
+              
+            - name: setup node
+              uses: actions/setup-node@v6
+              with:
+                node-version: 20
+
+            - name: Install Dependency
+              run: |
+                cd ${{ matrix.app }}
+                npm install
+
+            - name: Run Tests
+              run: |
+                echo 'running test for ${{ matrix.app }}'
+
+            - name: Security audit
+              run: |
+                cd ${{ matrix.app }}
+                npm audit --audit-level=critical
+
+            - name: Cache node modules
+              uses: actions/cache@v5
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+
+
+
+             
+
+
+
+
