@@ -105,13 +105,13 @@ jobs:
               username: ${{ secrets.DOCKERHUB_USERNAME }}
               password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        - name: trivy scan
+        - name: Scan Trivy
           uses: aquasecurity/trivy-action@v0.20.0
           with:
             image-ref: ${{ secrets.DOCKER_USER }}/github-sms-${{ matrix.app }}:${{ github.run_number }}
             format: json
-            exit-code: 1
             severity: CRITICAL
+            exit-code: 1
             output: trivy-${{ matrix.app }}.json
  
         
