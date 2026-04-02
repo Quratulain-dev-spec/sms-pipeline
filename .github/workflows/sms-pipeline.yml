@@ -113,6 +113,14 @@ jobs:
             severity: CRITICAL
             exit-code: 1
             output: trivy-${{ matrix.app }}.json
+
+        - name: upload artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: trivy-${{ matrix.app }}
+            path: trivy-${{ matrix.app }}.json
+
+
  
         
 
